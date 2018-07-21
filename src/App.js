@@ -27,12 +27,18 @@ class BooksApp extends React.Component {
     })
   }
 
+  componentWillUpdate (nextProps, nextState){
+
+  }
+
+
+
   render() {
-    const {currentlyReading,wantToRead, read } = this.state
+    const {result, currentlyReading, wantToRead, read } = this.state
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <Search updateSearchPage={this._updateSearchPage} onChangeShelf ={this._updateBookShelf}/>
+          <Search updateSearchPage={this._updateSearchPage} onChangeShelf ={this._updateBookShelf} mainBooks={result} />
         ) : (
           <div className="list-books">
             <div className="list-books-title">
@@ -55,12 +61,17 @@ class BooksApp extends React.Component {
   }
 
   _updateBookShelf = (book, shelf) => {
-    let newResult = this.state.result.map( e=> {
-      if(e.id === book.id){
-        e.shelf = shelf
-      }
-      return e
-    })
+    let newResult = [...this.state.result]
+    if(newResult.map(e => e.id).includes(book.id)){
+      newResult = this.state.result.map( e=> {
+        if(e.id === book.id){
+          e.shelf = shelf
+        }
+        return e
+      })
+    }else{
+      newResult.push(book)
+    }
     BooksAPI.update(book, shelf).then( result => {
       let currentlyReading = newResult.filter( e => result.currentlyReading.includes(e.id))
       let wantToRead = newResult.filter(e => result.wantToRead.includes(e.id))

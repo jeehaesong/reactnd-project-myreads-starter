@@ -14,7 +14,7 @@ class Bookshelf extends React.Component {
            {
             booksArr &&
             booksArr.map( (book, i) => (
-                <Book key={`book-${i}-${book}`} backgroundImage ={book.imageLinks.smallThubnail || book.imageLinks.thumbnail } bookTitle={book.title} bookAuthors={book.authors} shelf ={book.shelf} book={book} onChangeShelf={onChangeShelf}/>
+                <Book key={`book-${i}-${book}`} book={book} onChangeShelf={onChangeShelf}/>
                 )
             )
            }

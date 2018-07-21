@@ -9,10 +9,10 @@ class Search extends React.Component {
         serachInputValue: '',
         noResultFound: true
       }
-
+    
   render() {
     const {searchResult,noResultFound} = this.state
-    const {updateSearchPage,onChangeShelf} = this.props
+    const {updateSearchPage} = this.props
     return (
         <div className="search-books">
             <div className="search-books-bar">
@@ -27,7 +27,7 @@ class Search extends React.Component {
                   noResultFound ?
                   <p>Sorry, no results were found</p> :
                   searchResult.map( (book, i)=>(
-                    <Book key={`book-${i}-${book}`} backgroundImage ={book.imageLinks.smallThubnail || book.imageLinks.thumbnail } bookTitle={book.title} bookAuthors={book.authors} shelf ={book.shelf} book={book} onChangeShelf={onChangeShelf}/>
+                    <Book key={`book-${i}-${book}`} book={book} onChangeShelf={this.handelShelfChangeOnSearch}/>
                   ))
               }
               </ol>
@@ -47,21 +47,40 @@ class Search extends React.Component {
         })
     }else{
         BooksAPI.search(e.target.value).then(result => {
-            console.log('result',result)
-            if(result.error === "empty query"){
+            if(result.error === 'empty query'){
                 this.setState({
                     searchResult: [],
                     noResultFound: true
                 })
             }else{
+                let mainIds = this.props.mainBooks.map(e=> e.id)
+                let searchResult = result.map( e => {
+                    if ( mainIds.indexOf(e.id) > 0 ){
+                        e.shelf = this.props.mainBooks[mainIds.indexOf(e.id)].shelf
+                    }
+                    return e
+                })
                 this.setState({
-                    searchResult: result,
+                    searchResult,
                     noResultFound: false
                 })
             }
             
         })
     }
+  }
+  
+  handelShelfChangeOnSearch = (book, shelf)=>{
+    this.props.onChangeShelf(book, shelf)
+    let updatedSearchResult = this.state.searchResult.map(e=> {
+        if(e.id === book.id){
+            e.shelf = shelf
+        }
+        return e
+    })
+    this.setState({
+        searchResult: updatedSearchResult
+    })
   }
 }
 

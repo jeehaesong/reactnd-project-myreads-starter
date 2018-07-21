@@ -4,14 +4,14 @@ import './App.css'
 class Book extends React.Component {
 
   render() {
-    const {backgroundImage, bookTitle, bookAuthors, shelf, book, onChangeShelf} = this.props
+    const { book, onChangeShelf} = this.props
     return (
         <li>
             <div className="book">
                 <div className="book-top">
-                <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url(${backgroundImage})` }}></div>
+                <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url(${book.imageLinks? book.imageLinks.smallThubnail || book.imageLinks.thumbnail : ''})` }}></div>
                 <div className="book-shelf-changer">
-                    <select onChange={e => onChangeShelf(book,e.target.value)} value={shelf ||'none'}>
+                    <select onChange={e => onChangeShelf(book,e.target.value)} value={book.shelf || 'none'}>
                     <option value="move" disabled >Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
@@ -20,10 +20,10 @@ class Book extends React.Component {
                     </select>
                 </div>
                 </div>
-                <div className="book-title">{bookTitle}</div>
+                <div className="book-title">{book.title}</div>
                 {
-                    bookAuthors && 
-                    bookAuthors.map( (author,idx) => <div key={`${book.id}-${idx}`} className="book-authors"> {author}</div> )
+                    book.authors && 
+                    book.authors.map( (author,idx) => <div key={`${book.id}-${idx}`} className="book-authors"> {author}</div> )
                 }
             </div>
         </li>
