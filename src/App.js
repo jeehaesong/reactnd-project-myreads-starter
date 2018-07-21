@@ -1,4 +1,5 @@
 import React from 'react'
+import { Route, Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Search from './Search'
@@ -6,7 +7,6 @@ import Bookshelf from './Bookshelf'
 
 class BooksApp extends React.Component {
   state = {
-    showSearchPage: false,
     result: [],
     currentlyReading: [],
     wantToRead: [],
@@ -27,19 +27,14 @@ class BooksApp extends React.Component {
     })
   }
 
-  componentWillUpdate (nextProps, nextState){
-
-  }
-
-
-
   render() {
     const {result, currentlyReading, wantToRead, read } = this.state
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <Search updateSearchPage={this._updateSearchPage} onChangeShelf ={this._updateBookShelf} mainBooks={result} />
-        ) : (
+        <Route path = '/search'  render ={ _=>(
+          <Search onChangeShelf ={this._updateBookShelf} mainBooks={result} />
+        )} />
+        <Route exact path = '/' render = {_=> (
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
@@ -52,10 +47,10 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+              <Link to='/search'>Add a book</Link>
             </div>
           </div>
-        )}
+        )}/>
       </div>
     )
   }
@@ -83,10 +78,6 @@ class BooksApp extends React.Component {
         result: newResult
       })
     })
-  }
-
-  _updateSearchPage = (bool) => {
-    this.setState({ showSearchPage: bool })
   }
 }
 
