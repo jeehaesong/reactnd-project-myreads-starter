@@ -49,9 +49,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <Bookshelf bookshelfTitle={'Currently Reading'}  booksArr ={currentlyReading} />
-                <Bookshelf bookshelfTitle={'Want to Read'} booksArr ={wantToRead}/>
-                <Bookshelf bookshelfTitle={'Read'} booksArr ={read}/>
+                <Bookshelf bookshelfTitle={'Currently Reading'}  booksArr ={currentlyReading} onChangeShelf ={this._updateBookShelf} />
+                <Bookshelf bookshelfTitle={'Want to Read'} booksArr ={wantToRead} onChangeShelf ={this._updateBookShelf}/>
+                <Bookshelf bookshelfTitle={'Read'} booksArr ={read} onChangeShelf ={this._updateBookShelf}/>
               </div>
             </div>
             <div className="open-search">
@@ -61,6 +61,26 @@ class BooksApp extends React.Component {
         )}
       </div>
     )
+  }
+
+  _updateBookShelf = (book, shelf) => {
+    let newResult = this.state.result.map( e=> {
+      if(e.id === book.id){
+        e.shelf = shelf
+      }
+      return e
+    })
+    BooksAPI.update(book, shelf).then( result => {
+      let currentlyReading = newResult.filter( e => result.currentlyReading.includes(e.id))
+      let wantToRead = newResult.filter(e => result.wantToRead.includes(e.id))
+      let read = newResult.filter(e => result.read.includes(e.id))
+      this.setState({
+        currentlyReading,
+        wantToRead,
+        read,
+        result: newResult
+      })
+    })
   }
 }
 
