@@ -1,6 +1,7 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
+import Search from './Search'
 import Bookshelf from './Bookshelf'
 
 class BooksApp extends React.Component {
@@ -31,17 +32,7 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author"/>
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
+          <Search updateSearchPage={this._updateSearchPage} onChangeShelf ={this._updateBookShelf}/>
         ) : (
           <div className="list-books">
             <div className="list-books-title">
@@ -81,6 +72,10 @@ class BooksApp extends React.Component {
         result: newResult
       })
     })
+  }
+
+  _updateSearchPage = (bool) => {
+    this.setState({ showSearchPage: bool })
   }
 }
 
