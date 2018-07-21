@@ -24,14 +24,11 @@ class Search extends React.Component {
             <div className="search-books-results">
               <ol className="books-grid">
               {
-                  searchResult &&
+                  noResultFound ?
+                  <p>Sorry, no results were found</p> :
                   searchResult.map( (book, i)=>(
                     <Book key={`book-${i}-${book}`} backgroundImage ={book.imageLinks.smallThubnail || book.imageLinks.thumbnail } bookTitle={book.title} bookAuthors={book.authors} shelf ={book.shelf} book={book} onChangeShelf={onChangeShelf}/>
                   ))
-              }
-              {
-                  noResultFound &&
-                  <p>Sorry, no results were found</p>
               }
               </ol>
             </div>
@@ -50,7 +47,7 @@ class Search extends React.Component {
         })
     }else{
         BooksAPI.search(e.target.value).then(result => {
-            // console.log('result',result)
+            console.log('result',result)
             if(result.error === "empty query"){
                 this.setState({
                     searchResult: [],
